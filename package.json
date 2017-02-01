@@ -29,6 +29,7 @@
   "homepage": "https://github.com/zufrizalyordan/scraping-data-provinsi-kabupaten-kecamatan-indonesia#readme",
   "dependencies": {
     "axios": "^0.15.3",
-    "cheerio": "^0.22.0"
+    "cheerio": "^0.22.0",
+    "qs": "^6.3.0"
   }
 }

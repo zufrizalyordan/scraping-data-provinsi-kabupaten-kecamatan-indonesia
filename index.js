@@ -1,6 +1,7 @@
-let cheerio = require('cheerio');
-let axios = require('axios');
-let fs = require('fs');
+const cheerio = require('cheerio');
+const axios = require('axios');
+var qs = require('qs');
+const fs = require('fs');
 
 const dist_file_dir = 'dist/';
 
@@ -8,68 +9,66 @@ let provinsi = [];
 let kabupaten = [];
 let kecamatan = [];
 
-let dariWikipedia = {
-    url_provinsi: 'https://id.wikipedia.org/wiki/Daftar_provinsi_di_Indonesia',
+let dariBps = {
+    url_target: 'http://mfdonline.bps.go.id/index.php?link=hasil_pencarian',
     provinsi: function () {
-        let that = this;
-        console.log('Mulai ambilProvinsiDariWikipedia...');
-        axios.get(that.url_provinsi)
+        console.log('Mulai ambil data provinsi...');
+
+        let params = qs.stringify({
+            pilihcari:'kec',
+            kata_kunci:'a',
+            submit:'Cari'
+        });
+
+        return axios.post(dariBps.url_target, params)
         .then(function (response) {
             let $ = cheerio.load(response.data);
-            let list = $(".wikitable tr th[scope=row] a");
+            let list = $('tr.table_content');
             list.each( (i, elmt) => {
-                provinsi.push({id: i+1, title: elmt.attribs.title});
+                var child = elmt.children;
+                var province_id = child[3].children[0].data.replace(/[\n\t\r]/g,"");
+                var province_name = child[5].children[0].data.replace(/[\n\t\r]/g,"");
+                var city_id = child[7].children[0].data.replace(/[\n\t\r]/g,"");
+                var city_name = child[9].children[0].data.replace(/[\n\t\r]/g,"");
+                var suburb_id = child[11].children[0].data.replace(/[\n\t\r]/g,"");
+                var suburb_name = child[13].children[0].data.replace(/[\n\t\r]/g,"");
+
+                provinsi.push({id_propinsi: province_id, nama_propinsi: province_name, id_kota: city_id, nama_kota: city_name, id_kecamatan: suburb_id, nama_kecamatan: suburb_name});
             });
             return provinsi;
         })
-        .then ( (provinsi) => {
-            let message = "File provinsi gagal disimpan";
-            let data = JSON.stringify(provinsi)
+        .then((provinsi) => {
+            return dariBps.simpanKeFile(provinsi);
+        })
+        .catch((error) => {
+            return error;
+        });
+    },
+    simpanKeFile: function (resp) {
+        let message = "File gagal di buat.";
+        let data = JSON.stringify(resp);
 
-            fs.stat(dist_file_dir + 'provinsi.json', function(err, stat) {
-                if(err == null) {
-                } else if(err.code == 'ENOENT') {
-                    fs.openSync(dist_file_dir + 'provinsi.json', 'w');
-                } else {
-                    console.log('Error lainnya: ', err.code);
+        fs.stat(dist_file_dir + 'provinsi-kabupaten-kecamatan.json', function(err, stat) {
+            if(err == null) {
+                message = "File sudah ada";
+            } else if(err.code == 'ENOENT') {
+                fs.openSync(dist_file_dir + 'provinsi-kabupaten-kecamatan.json', 'w');
+            } else {
+                console.log('Error lainnya: ', err.code);
+            }
+
+            fs.writeFile(dist_file_dir + "provinsi-kabupaten-kecamatan.json", data, function(err) {
+                if(err) {
+                    return console.log(err);
                 }
-
-                fs.writeFile(dist_file_dir + "provinsi.json", data, function(err) {
-                    if(err) {
-                        return console.log(err);
-                    }
-                    message = "File provinsi berhasil disimpan.";
-                });
+                message = "File berhasil di buat.";
             });
-            return message
-        })
-        .catch(function (error) {
-            console.log(error);
         });
+        return message
     }
 }
 
-let dariBps = {
-    url_provinsi: 'http://mfdonline.bps.go.id/index.php?link=_RS8usGM1LvosR2hh1cfaGGR8a8PhNDIY5JrJLOUGpI',
-    url_kabupaten: 'http://mfdonline.bps.go.id/index.php?link=_RS8usGM1LvosR2hh1cfaGGR8a8PhNDIY5JrJLOUGpI',
-    provinsi: function () {
-        axios.get(url_provinsi)
-        .then(function (response) {
-            let data = [];
-            let $ = cheerio.load(response.data);
-
-            return data;
-        })
-        .then ( (data) => {
-            console.log(data);
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
-    }
-}
-
-axios.all([dariWikipedia.provinsi()])
-    .then(axios.spread(function (pesan) {
-        console.log(pesan);
+axios.all([dariBps.provinsi()])
+    .then(axios.spread(function (data) {
+        console.log(data);
     }));
