@@ -1,0 +1,34 @@
+{
+  "name": "scraping-data-provinsi-kabupaten-kecamatan-indonesia",
+  "version": "1.0.0",
+  "description": "scraping data provinsi, kabupaten, dan kecamatan indonesia",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zufrizalyordan/scraping-data-provinsi-kabupaten-kecamatan-indonesia.git"
+  },
+  "keywords": [
+    "nodejs",
+    "scraping",
+    "data",
+    "provinsi",
+    "data",
+    "kecamatan",
+    "data",
+    "indonesia",
+    "cheerio"
+  ],
+  "author": "zufrizalyordan@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zufrizalyordan/scraping-data-provinsi-kabupaten-kecamatan-indonesia/issues"
+  },
+  "homepage": "https://github.com/zufrizalyordan/scraping-data-provinsi-kabupaten-kecamatan-indonesia#readme",
+  "dependencies": {
+    "axios": "^0.15.3",
+    "cheerio": "^0.22.0"
+  }
+}
