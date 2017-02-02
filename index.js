@@ -45,26 +45,19 @@ let dariBps = {
         });
     },
     simpanKeFile: function (resp) {
-        let message = "File gagal di buat.";
+        let message = "File gagal ditulis";
         let data = JSON.stringify(resp);
+        var filePath = dist_file_dir + 'provinsi-kabupaten-kecamatan.json';
+        var file = fs.openSync(filePath, 'w');
+        var stats = fs.statSync(filePath);
 
-        fs.stat(dist_file_dir + 'provinsi-kabupaten-kecamatan.json', function(err, stat) {
-            if(err == null) {
-                message = "File sudah ada";
-            } else if(err.code == 'ENOENT') {
-                fs.openSync(dist_file_dir + 'provinsi-kabupaten-kecamatan.json', 'w');
-            } else {
-                console.log('Error lainnya: ', err.code);
+        if (stats.isFile()){
+            if (fs.writeFileSync(file, data) === undefined) {
+                message = "File berhasil ditulis.";
             }
+        }
 
-            fs.writeFile(dist_file_dir + "provinsi-kabupaten-kecamatan.json", data, function(err) {
-                if(err) {
-                    return console.log(err);
-                }
-                message = "File berhasil di buat.";
-            });
-        });
-        return message
+        return message;
     }
 }
 
