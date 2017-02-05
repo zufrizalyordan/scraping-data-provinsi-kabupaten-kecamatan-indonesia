@@ -3,7 +3,8 @@ Scraping menggunakan NodeJs, dengan hasil berupa data provinsi, kabupaten, dan k
 
 ## Hasil
 Hasil dari scraping dapat dilihat pada folder
-```dist/provinsi-kabupaten-kecamatan.json```
+```dist\/provinsi-kabupaten-kecamatan.json```
+
 Data saat ini masih berupa full json text, bukan data bersih per object.
 Silahkan fork dan ubah source code untuk menyesuaikan dengan keperluan.
 
@@ -14,4 +15,4 @@ Silahkan fork dan ubah source code untuk menyesuaikan dengan keperluan.
 ```node index.js```
 
 ```Onwards!```
-```~zufrizalyordan```
+~zufrizalyordan```
